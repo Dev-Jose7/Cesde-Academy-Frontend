@@ -1,0 +1,208 @@
+.login-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.login-left {
+  background-color: #ec008c;
+  color: white;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+  background-size: cover;
+  background-blend-mode: multiply;
+}
+
+.login-left-logo {
+  max-width: 150px;
+  margin: 0 auto 1.5rem;
+}
+
+.login-left-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.login-left-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.login-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 200px;
+  height: auto;
+}
+
+.login-title {
+    color: #ec008c;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    font-size: 20px;
+}
+
+.login-button {
+  width: 100%;
+  background-color: #ec008c;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.btn-microsoft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  border: 1px solid #ccc;
+}
+
+.form-control:focus {
+  border-color: #ec008c;
+  outline: none;
+}
+
+.is-invalid {
+  border-color: red;
+}
+
+.invalid-feedback {
+  color: red;
+  font-size: 0.875rem;
+}
+
+.btn-microsoft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid #d1d1d1;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: #444;
+  transition: background-color 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.btn-microsoft:hover {
+  background-color: #f3f3f3;
+  border-color: #aaa;
+}
+
+.microsoft-logo {
+  width: 20px;
+  height: 20px;
+}
+
+.forgot-password {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .login-left {
+    padding: 2rem 1.5rem;
+    order: 2;
+  }
+
+  .login-left-logo {
+    max-width: 120px;
+    margin-bottom: 1rem;
+  }
+
+  .login-left-title {
+    font-size: 1.5rem;
+  }
+
+  .login-left-text {
+    font-size: 0.95rem;
+  }
+
+  .login-right {
+    padding: 1.5rem;
+    order: 1;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+    box-shadow: none;
+    border-radius: 0;
+    max-width: 100%;
+  }
+
+  .login-logo {
+    max-width: 150px;
+  }
+
+  .login-title {
+    font-size: 18px;
+  }
+
+  .btn-microsoft {
+    font-size: 0.85rem;
+  }
+
+  .form-control {
+    font-size: 0.95rem;
+  }
+
+  .login-button {
+    font-size: 1rem;
+    padding: 0.65rem;
+  }
+}
