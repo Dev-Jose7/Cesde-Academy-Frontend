@@ -11,6 +11,10 @@ import "../../index.css";
 export default function Home() {
   const { usuario } = useUser();
 
+  if (!usuario) {
+    return <div>Cargando usuario...</div>;
+  }
+
   return (
     <>
       <PageMeta
@@ -18,30 +22,43 @@ export default function Home() {
         description="This is React.js Ecommerce Dashboard page for CesdeAcademy - React.js Tailwind CSS Admin Dashboard Template"
       />
 
-      <h1 className="text-2xl font-bold mb-4">Bienvenido, {usuario}</h1>
+      <h1 className="text-2xl font-bold mb-4">Bienvenido, {usuario.nombre}</h1>
 
-      <div className="grid grid-cols-12 gap-4 md:gap-6">
-        <div className="col-span-12 space-y-6 xl:col-span-7">
-          <EcommerceMetrics />
-          <MonthlySalesChart />
-        </div>
+      {usuario.tipo === "DOCENTE" ? (
+        // Contenido para docentes
+        <div className="grid grid-cols-12 gap-4 md:gap-6">
+          <div className="col-span-12 space-y-6 xl:col-span-7">
+            <EcommerceMetrics />
+            <MonthlySalesChart />
+          </div>
 
-        <div className="col-span-12 xl:col-span-5">
-          <MonthlyTarget />
-        </div>
+          <div className="col-span-12 xl:col-span-5">
+            <MonthlyTarget />
+          </div>
 
-        <div className="col-span-12">
-          <StatisticsChart />
-        </div>
+          <div className="col-span-12">
+            <StatisticsChart />
+          </div>
 
-        <div className="col-span-12 xl:col-span-5">
-          <DemographicCard />
-        </div>
+          <div className="col-span-12 xl:col-span-5">
+            <DemographicCard />
+          </div>
 
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
+          <div className="col-span-12 xl:col-span-7">
+            <RecentOrders />
+          </div>
         </div>
-      </div>
+      ) : (
+        // Contenido para estudiantes (modifica según lo que quieras mostrar)
+        <div className="grid grid-cols-12 gap-4 md:gap-6">
+          <div className="col-span-12 space-y-6 xl:col-span-12">
+            {/* Aquí puedes poner otros componentes o menos información */}
+            <h2 className="text-xl mb-4">Panel para estudiantes</h2>
+            {/* Ejemplo: Mostrar solo métricas básicas */}
+            <EcommerceMetrics />
+          </div>
+        </div>
+      )}
     </>
   );
 }

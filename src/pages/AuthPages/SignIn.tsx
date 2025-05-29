@@ -14,52 +14,52 @@ type Usuario = {
   cedula: string;
   contrasena: string;
   nombre: string;
-  tipo: "ESTUDIANTE" | "DOCENTE";
+  tipo: 'ESTUDIANTE' | 'DOCENTE';
 };
 
 type SignInProps = {
-  onLogin: (nombre: string) => void;
+  onLogin: (usuario: Usuario) => void;
 };
 
 const usuariosMock: Usuario[] = [
   {
-    cedula: "8543683603",
-    contrasena: "FeMa8543",
-    nombre: "Fernando Martínez",
-    tipo: "ESTUDIANTE",
+    cedula: '8543683603',
+    contrasena: 'FeMa8543',
+    nombre: 'Fernando Martínez',
+    tipo: 'ESTUDIANTE',
   },
   {
-    cedula: "8429142591",
-    contrasena: "HeEs8429",
-    nombre: "Helena Alejandra Escobar",
-    tipo: "DOCENTE",
+    cedula: '5501671057',
+    contrasena: 'LuMe5501',
+    nombre: 'Luz Mary Contreras Meza',
+    tipo: 'DOCENTE',
   },
 ];
 
+// =====================
+// Componente
+// =====================
 export default function SignIn({ onLogin }: SignInProps) {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
-  const navigate = useNavigate();
-
-  const onsubmited: SubmitHandler<FormData> = async (data) => {
-    // Busca usuario en mock
-    const user = usuariosMock.find(
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    const usuarioEncontrado = usuariosMock.find(
       (u) => u.cedula === data.cedula && u.contrasena === data.contrasena
     );
 
-    if (user) {
-      // Guardar usuario en localStorage (sin token porque no hay backend)
-      localStorage.setItem("usuario", JSON.stringify(user));
-
-      onLogin(user.nombre);
-      navigate("/dashboard");
-    } else {
-      alert("Cédula o contraseña incorrecta");
+    if (!usuarioEncontrado) {
+      alert('Cédula o contraseña incorrecta');
+      return;
     }
+
+    onLogin(usuarioEncontrado);
+    navigate('/dashboard'); // Redirigir
   };
 
   return (
@@ -70,6 +70,7 @@ export default function SignIn({ onLogin }: SignInProps) {
       />
 
       <div className="login-wrapper">
+        {/* Panel izquierdo */}
         <div className="login-left">
           <img src={logoCesde2} alt="Logo CESDE" className="login-left-logo" />
           <h2 className="login-left-title">Bienvenido a Cesde Academy</h2>
@@ -85,14 +86,14 @@ export default function SignIn({ onLogin }: SignInProps) {
               <h4 className="login-title">Iniciar sesión</h4>
             </div>
 
-            <form onSubmit={handleSubmit(onsubmited)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group">
                 <label htmlFor="cedula">Cédula</label>
                 <input
                   type="text"
                   id="cedula"
                   className="form-control"
-                  {...register("cedula", { required: "Este campo es obligatorio" })}
+                  {...register('cedula', { required: 'Este campo es obligatorio' })}
                 />
                 {errors.cedula && <p className="error">{errors.cedula.message}</p>}
               </div>
@@ -103,7 +104,7 @@ export default function SignIn({ onLogin }: SignInProps) {
                   type="password"
                   id="contrasena"
                   className="form-control"
-                  {...register("contrasena", { required: "Este campo es obligatorio" })}
+                  {...register('contrasena', { required: 'Este campo es obligatorio' })}
                 />
                 {errors.contrasena && <p className="error">{errors.contrasena.message}</p>}
               </div>
