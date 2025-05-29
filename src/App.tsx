@@ -50,7 +50,6 @@ export default function App() {
               </RequireAuth>
             }
           >
-            {/* Renderiza las rutas internas del dashboard aquí */}
             <Route path="*" element={<DashboardRoutes />} />
           </Route>
 
@@ -60,4 +59,3 @@ export default function App() {
     </UserProvider>
   );
 }
-

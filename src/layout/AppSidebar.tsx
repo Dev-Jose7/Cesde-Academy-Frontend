@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom"; // cambiar a react-router-dom
 import CesdeLogo from "../assets/Images/logo-Cesde-2023.svg";
-
 
 import {
   BoxCubeIcon,
@@ -17,7 +16,6 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 
-
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -29,36 +27,36 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Inicio", path: "/", pro: false }],
+    subItems: [{ name: "Inicio", path: "/dashboard/" }],
   },
   {
     icon: <CalenderIcon />,
     name: "Clases",
-    path: "Clases",
+    path: "/dashboard/Clases", // Ruta absoluta con prefijo dashboard
   },
   {
     icon: <UserCircleIcon />,
     name: "Actividades",
-    path: "Actividades",
+    path: "/dashboard/Actividades",
   },
   {
-  name: "Asistencias",
-  icon: <ListIcon />,
-  subItems: [
-    { name: "Grupo 6 AM", path: "/grupo-6am", pro: false },
-    { name: "Grupo 7 AM", path: "/grupo-7am", pro: false },
-    { name: "Grupo 8 AM", path: "/grupo-8am", pro: false },
-  ],
+    name: "Asistencias",
+    icon: <ListIcon />,
+    subItems: [
+      { name: "Grupo 6 AM", path: "/dashboard/grupo-6am" },
+      { name: "Grupo 7 AM", path: "/dashboard/grupo-7am" },
+      { name: "Grupo 8 AM", path: "/dashboard/grupo-8am" },
+    ],
   },
   {
     name: "Anuncios",
     icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    subItems: [{ name: "Basic Tables", path: "/dashboard/basic-tables" }],
   },
   {
-  icon: <PieChartIcon />,
-  name: "Reportes",
-  path: "reportes",
+    icon: <PieChartIcon />,
+    name: "Reportes",
+    path: "/dashboard/reportes",
   },
 ];
 
@@ -67,8 +65,8 @@ const othersItems: NavItem[] = [
     icon: <PieChartIcon />,
     name: "Analitica",
     subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
+      { name: "Line Chart", path: "/dashboard/line-chart" },
+      { name: "Bar Chart", path: "/dashboard/bar-chart" },
     ],
   },
 ];
@@ -81,12 +79,10 @@ const AppSidebar: React.FC = () => {
     type: "main" | "others";
     index: number;
   } | null>(null);
-  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
-  );
+  const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => location.pathname === path;
+  // Función para detectar ruta activa exacta
   const isActive = useCallback(
     (path: string) => location.pathname === path,
     [location.pathname]
@@ -107,6 +103,9 @@ const AppSidebar: React.FC = () => {
               submenuMatched = true;
             }
           });
+        } else if (nav.path && isActive(nav.path)) {
+          setOpenSubmenu(null);
+          submenuMatched = true;
         }
       });
     });
@@ -268,67 +267,27 @@ const AppSidebar: React.FC = () => {
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
-            ? "w-[290px]"
+          isExpanded || isMobileOpen || isHovered
+            ? "w-[260px]"
             : "w-[90px]"
-        }
-        ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
+        }`}
+      onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+      <Link
+        to="/dashboard"
+        className="flex items-center justify-center pt-10"
+      >
+        <img src={CesdeLogo} alt="Logo" className="h-14" />
+      </Link>
+      <nav
+        className={`mt-6 space-y-6 overflow-y-auto flex-1 pb-8 ${
+          isExpanded || isMobileOpen || isHovered ? "" : "items-center"
         }`}
       >
-      <div className={`py-8 hidden lg:flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"}`}>
-        <Link to="/">
-          <img src={CesdeLogo} alt="Logo CESDE" className="h-16 w-auto" />
-        </Link>
-      </div>
-
-      </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
-            </div>
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "OTROS"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
-            </div>
-          </div>
-        </nav>
-      </div>
+        {renderMenuItems(navItems, "main")}
+        {renderMenuItems(othersItems, "others")}
+      </nav>
     </aside>
   );
 };

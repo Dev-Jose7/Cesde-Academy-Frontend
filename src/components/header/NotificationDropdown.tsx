@@ -89,7 +89,7 @@ export default function NotificationDropdown() {
                   <span className="font-medium text-gray-800 dark:text-white/90">
                     Esteban Gómez
                   </span>
-                  <span>Sybio un ejercicio</span>
+                  <span>Subio un ejercicio</span>
                 </span>
 
                 <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">

@@ -1,0 +1,106 @@
+/* Home.css */
+
+/* Contenedor principal para aumentar especificidad */
+.home-page {
+  padding: 1rem !important;
+  background-color: #fff !important;
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
+}
+
+/* Título de bienvenida */
+.home-page .welcome-header {
+  color: #ed2e91 !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+/* Icono junto al título */
+.home-page .welcome-header i {
+  font-size: 2.8rem !important;
+  color: #ed2e91 !important;
+}
+
+/* Contenedor del video para que sea muy ancho */
+.home-page .video-wrapper {
+  max-width: 95vw !important;
+  margin: 0 auto !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+  margin-bottom: 2rem !important;
+}
+
+/* El iframe con borde redondeado */
+.home-page .video-wrapper iframe {
+  border-radius: 8px !important;
+  width: 100% !important;
+  height: 60vh !important; /* altura grande para pantalla */
+}
+
+/* Contenedor de botones */
+.home-page .button-group {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 2.5rem !important; /* más espacio entre botones */
+  margin-bottom: 3rem !important;
+}
+
+/* Botones */
+.home-page .btn-action {
+  background-color: #ff5176 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  border: none !important;
+  padding: 0.75rem 2rem !important;
+  min-width: 180px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+  justify-content: center !important;
+  font-size: 1.1rem !important;
+}
+
+/* Segundo botón distinto color */
+.home-page .btn-action.faltas {
+  background-color: #ff7c5e !important;
+}
+
+/* Iconos dentro de botones */
+.home-page .btn-action i {
+  font-size: 1.3rem !important;
+}
+
+/* Hover effect */
+.home-page .btn-action:hover {
+  filter: brightness(0.9) !important;
+}
+
+/* Métricas básicas - espacio extra arriba */
+.home-page .metrics {
+  margin-top: 3rem !important;
+}
+
+/* Responsive: en móviles, apilar botones */
+@media (max-width: 640px) {
+  .home-page .button-group {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+
+  .home-page .btn-action {
+    min-width: auto !important;
+    width: 100% !important;
+  }
+}
+

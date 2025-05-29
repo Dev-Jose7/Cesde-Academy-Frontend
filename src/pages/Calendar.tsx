@@ -14,6 +14,10 @@ import { useModal } from "../hooks/useModal";
 interface CalendarEvent extends EventInput {
   extendedProps: {
     calendar: string;
+    grupo?: string;
+    docente?: string;
+    modulo?: string;
+    dia?: string;
   };
 }
 
@@ -40,11 +44,14 @@ const renderEventContent = (eventInfo: any) => {
   const calendarLevel = eventInfo.event.extendedProps?.calendar?.toLowerCase() || "primary";
   const colorClass = `fc-bg-${calendarLevel}`;
 
+  const { grupo, docente, modulo } = eventInfo.event.extendedProps;
+
   return (
-    <div className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}>
-      <div className="fc-daygrid-event-dot"></div>
-      <div className="fc-event-time">{eventInfo.timeText || ""}</div>
-      <div className="fc-event-title">{eventInfo.event.title || "Evento sin título"}</div>
+    <div className={`p-1 rounded ${colorClass}`}>
+      <div className="font-bold text-sm">{eventInfo.timeText}</div>
+      <div className="text-xs">{eventInfo.event.title}</div>
+      <div className="text-[10px]">Módulo: {modulo}</div>
+      <div className="text-[10px]">Grupo: {grupo}</div>
     </div>
   );
 };
@@ -65,26 +72,45 @@ const Calendar: React.FC = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/clase/lista");
-
         const data = await response.json();
 
-        const filteredEvents = data.filter((item: any) =>
-          item.docente?.toUpperCase() === "LUZ MARY CONTRERAS MEZA"
+        const filteredEvents = data.filter(
+          (item: any) => item.docente?.toUpperCase() === "LUZ MARY CONTRERAS MEZA"
         );
 
-        const mappedEvents: CalendarEvent[] = filteredEvents.map((item: any) => {
-          const dayIndex = dayMap[item.dia?.toUpperCase()] ?? 0;
+        const allHorarios = await Promise.all(
+          filteredEvents.map(async (elemento: any) => {
+            const res = await fetch(`/api/clase-horario/clase/${elemento.id}`);
+            const horarios = await res.json();
+            return horarios.map((horario: any) => ({
+              ...horario,
+              claseNombre: elemento.nombre,
+              grupo: elemento.grupo,
+              docente: elemento.docente,
+              modulo: elemento.modulo,
+            }));
+          })
+        );
+
+        const horarios = allHorarios.flat();
+
+        const mappedEvents: CalendarEvent[] = horarios.map((item: any) => {
+          const diaSemana = dayMap[item.dia.toUpperCase()];
 
           return {
             id: item.id?.toString(),
-            title: item.docente || "Sin docente",
-            daysOfWeek: [dayIndex],
+            title: item.claseNombre || "Tipo de clase",
+            daysOfWeek: [diaSemana],
             startTime: item.horaInicio,
             endTime: item.horaFin,
-            startRecur: "2025-05-01",
-            endRecur: "2025-07-01",
+            startRecur: "2025-01-01",
+            endRecur: "2025-12-31",
             extendedProps: {
-              calendar: "Primary",
+              calendar: "Academico",
+              grupo: item.grupo,
+              docente: item.docente,
+              modulo: item.modulo,
+              dia: item.dia,
             },
           };
         });
@@ -172,7 +198,7 @@ const Calendar: React.FC = () => {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="custom-calendar">
-        <FullCalendar
+          <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -180,7 +206,7 @@ const Calendar: React.FC = () => {
           headerToolbar={{
             left: "prev,next addEventButton",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek", 
           }}
           events={events}
           selectable={true}
@@ -199,7 +225,6 @@ const Calendar: React.FC = () => {
         />
       </div>
 
-      {/* MODAL */}
       {isOpen && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]"
