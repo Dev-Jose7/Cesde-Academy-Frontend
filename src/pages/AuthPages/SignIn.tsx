@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Usuario } from '../../context/UserContext';
 import PageMeta from '../../components/common/PageMeta';
-import logoCesde from '../../assets/Images/logo-Cesde-2023.svg';
-import logoCesde2 from '../../assets/Images/logo-cesde-2.png';
+import logoCesde from '../../assets/images/logo-Cesde-2023.svg';
+import logoCesde2 from '../../assets/images/logo-cesde-2.png';
 import './Login.css';
 type FormData = {
   cedula: string;
