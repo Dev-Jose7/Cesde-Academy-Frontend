@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { fetchAuth } from "../../utils/fetchAuth";
 import PageMeta from "../../components/common/PageMeta";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
+import { Usuario } from "../../context/UserContext";
 
-// Interfaces para definir el tipo de datos
 interface Clase {
+  id: number;
   docente?: string;
   modulo?: string;
   grupo?: string;
@@ -21,26 +22,89 @@ interface Actividad {
 
 export default function FormElements() {
   const [actividades, setActividades] = useState<Actividad[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
 
   useEffect(() => {
-    axios
-      .get("/api/actividad/lista")
-      .then((response) => {
-        setActividades(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error al cargar actividades:", error);
-        setError(true);
-        setLoading(false);
-      });
+    const usuarioLocal = localStorage.getItem("usuario");
+    if (usuarioLocal) {
+      try {
+        const user = JSON.parse(usuarioLocal);
+        setUsuario(user);
+      } catch (err) {
+        console.error("Error al parsear usuario desde localStorage:", err);
+      }
+    }
   }, []);
 
-  if (loading) {
-    return <div className="text-center py-10">Cargando actividades...</div>;
-  }
+  useEffect(() => {
+    const cargarActividades = async () => {
+      if (!usuario) return;
+
+      try {
+        let actividadesTotales: Actividad[] = [];
+
+        if (usuario.tipo === "ESTUDIANTE") {
+          const gruposResponse = await fetchAuth(`/api/grupo-estudiante/estudiante/${usuario.id}`, {
+            method: "GET",
+          });
+
+          if (!gruposResponse.ok) throw new Error("No se pudieron obtener los grupos.");
+
+          const grupos = await gruposResponse.json();
+
+          for (const grupo of grupos) {
+            const clasesResponse = await fetchAuth(`/api/clase/grupo/${grupo.id}`, {
+              method: "GET",
+            });
+
+            if (!clasesResponse.ok) continue;
+
+            const clases = await clasesResponse.json();
+
+            for (const clase of clases) {
+              const actividadesResponse = await fetchAuth(`/api/actividad/clase/${clase.id}`, {
+                method: "GET",
+              });
+
+              if (!actividadesResponse.ok) continue;
+
+              const actividadesClase = await actividadesResponse.json();
+              actividadesTotales.push(...actividadesClase);
+            }
+          }
+        }
+
+        if (usuario.tipo === "DOCENTE") {
+          const clasesResponse = await fetchAuth(`/api/clase/docente/${usuario.id}`, {
+            method: "GET",
+          });
+
+          if (!clasesResponse.ok) throw new Error("No se pudieron obtener las clases del docente.");
+
+          const clases = await clasesResponse.json();
+
+          for (const clase of clases) {
+            const actividadesResponse = await fetchAuth(`/api/actividad/clase/${clase.id}`, {
+              method: "GET",
+            });
+
+            if (!actividadesResponse.ok) continue;
+
+            const actividadesClase = await actividadesResponse.json();
+            actividadesTotales.push(...actividadesClase);
+          }
+        }
+
+        setActividades(actividadesTotales);
+      } catch (err) {
+        console.error("Error al cargar actividades:", err);
+        setError(true);
+      }
+    };
+
+    cargarActividades();
+  }, [usuario]);
 
   if (error) {
     return (
@@ -50,35 +114,27 @@ export default function FormElements() {
     );
   }
 
-  const actividadesFiltradas = actividades.filter(
-    (actividad) => actividad.clase?.docente === "Luz Mary Contreras Meza"
-  );
-
   return (
     <div>
       <PageMeta
         title="Actividades Académicas | CesdeAcademy"
-        description="Lista de actividades académicas para los estudiantes"
+        description="Lista de actividades académicas para los estudiantes y docentes"
       />
       <PageBreadcrumb pageTitle="Actividades Académicas" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-6">
-        {actividadesFiltradas.length === 0 ? (
+        {actividades.length === 0 ? (
           <div className="col-span-full text-center text-gray-500">
-            No hay actividades asignadas a la docente Luz Mary Contreras Meza.
+            No hay actividades disponibles para {usuario?.nombre || "el usuario actual"}.
           </div>
         ) : (
-          actividadesFiltradas.map((actividad) => (
+          actividades.map((actividad) => (
             <div
               key={actividad.id}
               className="border rounded-2xl shadow-md p-4 bg-white space-y-2"
             >
-              <h3 className="text-xl font-semibold text-gray-800">
-                {actividad.titulo}
-              </h3>
-              <p className="text-sm text-gray-600 whitespace-pre-line">
-                {actividad.descripcion}
-              </p>
+              <h3 className="text-xl font-semibold text-gray-800">{actividad.titulo}</h3>
+              <p className="text-sm text-gray-600 whitespace-pre-line">{actividad.descripcion}</p>
               <p className="text-sm">
                 <strong>Tipo:</strong> {actividad.tipo}
               </p>
@@ -101,4 +157,3 @@ export default function FormElements() {
     </div>
   );
 }
-

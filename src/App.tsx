@@ -1,12 +1,18 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { UserProvider, useUser, Usuario } from "./context/UserContext";
+import React, { useEffect } from "react";
+import { useGlobalLoader } from "./components/common/Loader";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
+import { UserProvider, useUser, Usuario } from "./context/UserContext";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import AppLayout from "./layout/AppLayout";
 import SignIn from "./pages/AuthPages/SignIn";
 import NotFound from "./pages/OtherPage/NotFound";
-
 import DashboardRoutes from "./DashboardRoutes";
 
 function RequireAuth({ children }: { children: React.ReactElement }) {
@@ -25,7 +31,6 @@ function RedirectBasedOnAuth() {
 function SignInWrapper() {
   const { setUsuario } = useUser();
 
-  // Aquí tipamos usuario con Usuario
   const handleLogin = (usuario: Usuario) => {
     setUsuario(usuario);
   };
@@ -33,15 +38,34 @@ function SignInWrapper() {
   return <SignIn onLogin={handleLogin} />;
 }
 
+// Este componente se encarga de escuchar el logout global
+function LogoutListener() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleLogout = () => {
+      navigate("/signin");
+    };
+
+    window.addEventListener("logout", handleLogout);
+    return () => window.removeEventListener("logout", handleLogout);
+  }, [navigate]);
+
+  return null;
+}
+
 export default function App() {
+  const loader = useGlobalLoader(); // Aquí generas el loader global
+
   return (
     <UserProvider>
       <Router>
+        <LogoutListener />
         <ScrollToTop />
+        {loader}
         <Routes>
           <Route path="/" element={<RedirectBasedOnAuth />} />
           <Route path="/signin" element={<SignInWrapper />} />
-
           <Route
             path="/dashboard/*"
             element={
@@ -52,7 +76,6 @@ export default function App() {
           >
             <Route path="*" element={<DashboardRoutes />} />
           </Route>
-
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
