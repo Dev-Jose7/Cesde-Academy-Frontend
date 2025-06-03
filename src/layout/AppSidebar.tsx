@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // cambiar a react-router-dom
-import CesdeLogo from "../assets/Images/logo-Cesde-2023.svg";
+import CesdeLogo from "../assets/images/logo-Cesde-2023.svg";
 
 import {
   CalenderIcon,
