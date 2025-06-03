@@ -6,7 +6,7 @@ const UserMetaCard = () => {
       <div className="user-avatar">C</div>
       <div className="user-info">
         <h2 className="user-name">Valeria Salazar</h2>
-        <p className="user-role">Cesde Academy</p>
+        <p className="user-role">Cesde Academic</p>
       </div>
     </div>
   );

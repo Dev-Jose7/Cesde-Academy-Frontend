@@ -1,4 +1,4 @@
 MIT License
 
-Copyright (c) 2023 CesdeAcademy
+Copyright (c) 2023 CesdeAcademic
 

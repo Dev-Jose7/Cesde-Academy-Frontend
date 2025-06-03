@@ -84,14 +84,14 @@ export default function SignIn({ onLogin }: SignInProps) {
   return (
     <>
       <PageMeta
-        title="Inicio de sesión | Cesde Academy"
-        description="Accede a la plataforma Cesde Academy con tu cédula y contraseña"
+        title="Inicio de sesión | Cesde Academic"
+        description="Accede a la plataforma Cesde Academic con tu cédula y contraseña"
       />
 
       <div className="login-wrapper">
         <div className="login-left">
           <img src={logoCesde2} alt="Logo CESDE" className="login-left-logo" />
-          <h2 className="login-left-title">Bienvenido a Cesde Academy</h2>
+          <h2 className="login-left-title">Bienvenido a Cesde Academic</h2>
           <p className="login-left-text">
             La plataforma donde desarrollas tu potencial, accedes a contenido exclusivo y gestionas tu proceso académico de manera dinámica. Conoce notas, actividades, horarios y programaciones.
           </p>

@@ -117,7 +117,7 @@ export default function FormElements() {
   return (
     <div>
       <PageMeta
-        title="Actividades Académicas | CesdeAcademy"
+        title="Actividades Académicas | CesdeAcademic"
         description="Lista de actividades académicas para los estudiantes y docentes"
       />
       <PageBreadcrumb pageTitle="Actividades Académicas" />
