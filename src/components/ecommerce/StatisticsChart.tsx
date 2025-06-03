@@ -16,7 +16,6 @@ export type Usuario = {
 
 export default function StatisticsChart() {
   const [userData, setUserData] = useState<Usuario[]>([]);
-  const [error, setError] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
 
   useEffect(() => {
@@ -41,7 +40,6 @@ export default function StatisticsChart() {
           setUserData(data);
         } else {
           console.error("Error al obtener actividades");
-          setError(true);
         }
       } catch (err) {
         console.error("Error inesperado:", err);

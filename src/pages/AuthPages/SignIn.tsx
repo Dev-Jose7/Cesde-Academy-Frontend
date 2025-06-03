@@ -131,8 +131,8 @@ export default function SignIn({ onLogin }: SignInProps) {
                 {errors.contrasena && <p className="error">{errors.contrasena.message}</p>}
               </div>
 
-              <div className="form-check mb-3">
-                <input type="checkbox" className="form-check-input" id="check1" />
+              <div className="flex items-center form-check mb-3">
+                <input type="checkbox" className="form-check-input mr-2" id="check1" />
                 <label className="form-check-label" htmlFor="check1">Recordarme</label>
               </div>
 

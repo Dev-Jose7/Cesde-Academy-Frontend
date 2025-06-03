@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useUser } from "../../context/UserContext"; // Asegúrate que la ruta es correcta
-import { showLoader, hideLoader } from "../../components/common/Loader";
 import { fetchAuth } from "../../utils/fetchAuth";
 
 export default function UserDropdown() {
