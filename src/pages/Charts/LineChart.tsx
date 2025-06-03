@@ -4,6 +4,24 @@ import LineChartOne from "../../components/charts/line/LineChartOne";
 import PageMeta from "../../components/common/PageMeta";
 
 export default function LineChart() {
+
+  const getAnalitycs = async () => {
+    let responseAsistencias = await fetch("https://cesde-academic-analytics-production.up.railway.app/estudiantes/1/asistencias");
+    let responseCalificaciones = await fetch("https://cesde-academic-analytics-production.up.railway.app/estudiantes/3/califiaciones");
+    
+    try {
+      let dataAsistencias = await responseAsistencias.json()
+      let dataCalificaciones = await responseCalificaciones.json();
+      console.log("Asistencias usuario ID: 1: ", dataAsistencias);
+      console.log("Calificaciones usuario ID: 3: ", dataCalificaciones)
+    } catch (error) {
+      
+    }
+    
+  }
+
+  getAnalitycs();
+
   return (
     <>
       <PageMeta
