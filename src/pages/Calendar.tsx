@@ -39,12 +39,13 @@ const dayMap: Record<string, number> = {
   SABADO: 6,
 };
 
-// Render personalizado para los eventos
+// Render personalizado
 const renderEventContent = (eventInfo: any) => {
   const calendarLevel = eventInfo.event.extendedProps?.calendar?.toLowerCase() || "primary";
   const colorClass = `fc-bg-${calendarLevel}`;
-
   const { grupo, docente, modulo } = eventInfo.event.extendedProps;
+
+  console.log(docente)
 
   return (
     <div className={`p-1 rounded ${colorClass}`}>
@@ -71,35 +72,39 @@ const Calendar: React.FC = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
+        const usuarioString = localStorage.getItem("usuario");
+        if (!usuarioString) return;
+
+        const usuario = JSON.parse(usuarioString);
         const response = await fetch("/api/clase/lista");
         const data = await response.json();
 
-        const filteredEvents = data.filter(
-          (item: any) => item.docente?.toUpperCase() === "LUZ MARY CONTRERAS MEZA"
+        const filteredClasses = data.filter(
+          (item: any) => item.docente?.toUpperCase() === usuario.nombre.toUpperCase()
         );
 
-        const allHorarios = await Promise.all(
-          filteredEvents.map(async (elemento: any) => {
-            const res = await fetch(`/api/clase-horario/clase/${elemento.id}`);
+        const horariosPorClase = await Promise.all(
+          filteredClasses.map(async (clase: any) => {
+            const res = await fetch(`/api/clase-horario/clase/${clase.id}`);
             const horarios = await res.json();
             return horarios.map((horario: any) => ({
               ...horario,
-              claseNombre: elemento.nombre,
-              grupo: elemento.grupo,
-              docente: elemento.docente,
-              modulo: elemento.modulo,
+              claseNombre: clase.nombre,
+              grupo: clase.grupo,
+              docente: clase.docente,
+              modulo: clase.modulo,
             }));
           })
         );
 
-        const horarios = allHorarios.flat();
+        const todosLosHorarios = horariosPorClase.flat();
 
-        const mappedEvents: CalendarEvent[] = horarios.map((item: any) => {
-          const diaSemana = dayMap[item.dia.toUpperCase()];
+        const mappedEvents: CalendarEvent[] = todosLosHorarios.map((item: any) => {
+          const diaSemana = dayMap[item.dia?.toUpperCase()] ?? 0;
 
           return {
             id: item.id?.toString(),
-            title: item.claseNombre || "Tipo de clase",
+            title: item.claseNombre || "Clase",
             daysOfWeek: [diaSemana],
             startTime: item.horaInicio,
             endTime: item.horaFin,
@@ -117,7 +122,7 @@ const Calendar: React.FC = () => {
 
         setEvents(mappedEvents);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error("Error cargando eventos:", error);
       }
     };
 
@@ -134,19 +139,18 @@ const Calendar: React.FC = () => {
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     resetModalFields();
-    setEventStartDate(selectInfo.startStr || "");
-    setEventEndDate(selectInfo.endStr || selectInfo.startStr || "");
+    setEventStartDate(selectInfo.startStr);
+    setEventEndDate(selectInfo.endStr || selectInfo.startStr);
     openModal();
   };
 
   const handleEventClick = (clickInfo: EventClickArg) => {
     const event = clickInfo.event;
-
     setSelectedEvent({
       id: event.id,
       title: event.title || "",
-      start: event.start?.toISOString() || "",
-      end: event.end?.toISOString() || "",
+      start: event.start?.toISOString(),
+      end: event.end?.toISOString(),
       extendedProps: {
         calendar: event.extendedProps?.calendar || "Primary",
       },
@@ -165,31 +169,20 @@ const Calendar: React.FC = () => {
       return;
     }
 
-    if (selectedEvent) {
-      setEvents((prevEvents) =>
-        prevEvents.map((event) =>
-          event.id === selectedEvent.id
-            ? {
-                ...event,
-                title: eventTitle,
-                start: eventStartDate,
-                end: eventEndDate,
-                extendedProps: { calendar: eventLevel },
-              }
-            : event
-        )
-      );
-    } else {
-      const newEvent: CalendarEvent = {
-        id: Date.now().toString(),
-        title: eventTitle,
-        start: eventStartDate,
-        end: eventEndDate,
-        allDay: true,
-        extendedProps: { calendar: eventLevel },
-      };
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
-    }
+    const newEvent: CalendarEvent = {
+      id: selectedEvent?.id || Date.now().toString(),
+      title: eventTitle,
+      start: eventStartDate,
+      end: eventEndDate,
+      allDay: true,
+      extendedProps: { calendar: eventLevel },
+    };
+
+    setEvents((prev) =>
+      selectedEvent
+        ? prev.map((e) => (e.id === selectedEvent.id ? newEvent : e))
+        : [...prev, newEvent]
+    );
 
     closeModal();
     resetModalFields();
@@ -198,7 +191,7 @@ const Calendar: React.FC = () => {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
       <div className="custom-calendar">
-          <FullCalendar
+        <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -206,10 +199,10 @@ const Calendar: React.FC = () => {
           headerToolbar={{
             left: "prev,next addEventButton",
             center: "title",
-            right: "dayGridMonth,timeGridWeek", 
+            right: "dayGridMonth,timeGridWeek",
           }}
           events={events}
-          selectable={true}
+          selectable
           select={handleDateSelect}
           eventClick={handleEventClick}
           eventContent={renderEventContent}
@@ -253,9 +246,9 @@ const Calendar: React.FC = () => {
             <label className="block mb-2 font-medium">Fecha inicio</label>
             <DatePicker
               selected={eventStartDate ? new Date(eventStartDate) : null}
-              onChange={(date: Date | null) => {
-                if (date) setEventStartDate(date.toISOString().split("T")[0]);
-              }}
+              onChange={(date: Date | null) =>
+                date && setEventStartDate(date.toISOString().split("T")[0])
+              }
               className="border rounded p-2 w-full mb-4"
               dateFormat="yyyy-MM-dd"
             />
@@ -263,9 +256,9 @@ const Calendar: React.FC = () => {
             <label className="block mb-2 font-medium">Fecha fin</label>
             <DatePicker
               selected={eventEndDate ? new Date(eventEndDate) : null}
-              onChange={(date: Date | null) => {
-                if (date) setEventEndDate(date.toISOString().split("T")[0]);
-              }}
+              onChange={(date: Date | null) =>
+                date && setEventEndDate(date.toISOString().split("T")[0])
+              }
               className="border rounded p-2 w-full mb-4"
               dateFormat="yyyy-MM-dd"
             />

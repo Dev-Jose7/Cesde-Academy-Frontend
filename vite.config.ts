@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://cesde-academic-app-development.up.railway.app",
+        target: "https://cesde-academic-app-production.up.railway.app",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

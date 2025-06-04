@@ -1,16 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom"; // cambiar a react-router-dom
-import CesdeLogo from "../assets/Images/logo-Cesde-2023.svg";
+import CesdeLogo from "../assets/images/logo-Cesde-2023.svg";
 
 import {
-  BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
-  HorizontaLDots,
   ListIcon,
   PieChartIcon,
-  PlugInIcon,
   TableIcon,
   UserCircleIcon,
 } from "../icons";
@@ -268,7 +265,7 @@ const AppSidebar: React.FC = () => {
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen || isHovered
-            ? "w-[260px]"
+            ? "w-[290px]"
             : "w-[90px]"
         }`}
       onMouseEnter={() => setIsHovered(true)}

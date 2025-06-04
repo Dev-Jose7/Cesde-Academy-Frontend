@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export type Usuario = {
+  id: number;
   cedula: string;
-  contrasena: string;
   nombre: string;
-  tipo: "ESTUDIANTE" | "DOCENTE";
+  tipo: "ESTUDIANTE" | "DOCENTE" | "DIRECTIVO" | "ADMINISTRATIVO";
+  estado: string;
 };
 
 type UserContextType = {

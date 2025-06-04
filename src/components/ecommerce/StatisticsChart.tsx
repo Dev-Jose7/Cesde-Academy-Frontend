@@ -1,40 +1,56 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
+import { fetchAuth } from "../../utils/fetchAuth";
 
-interface Usuario {
+export type Usuario = {
+  id: number;
+  cedula: string;
+  nombre: string;
+  tipo: "ESTUDIANTE" | "DOCENTE" | "DIRECTIVO" | "ADMINISTRATIVO";
   estado: string;
   creado: string;
-}
+  actualizado: string
+};
 
 export default function StatisticsChart() {
   const [userData, setUserData] = useState<Usuario[]>([]);
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
 
   useEffect(() => {
-    const fetchUsuarios = async () => {
+    const usuarioLocal = localStorage.getItem("usuario");
+    if (usuarioLocal) {
       try {
-        const response = await axios.get("/api/usuario/lista");
-        console.log("✅ Datos desde API:", response.data);
-        setUserData(response.data);
-      } catch (error) {
-        console.error("Error al obtener usuarios desde API:", error);
+        const user = JSON.parse(usuarioLocal);
+        setUsuario(user);
+      } catch (err) {
+        console.error("Error al parsear usuario desde localStorage:", err);
+      }
+    }
+  }, []);
 
-        // Fallback: Datos simulados
-        const fakeData = [
-          { estado: "ACTIVO", creado: "2025-01-15" },
-          { estado: "ACTIVO", creado: "2025-01-20" },
-          { estado: "INACTIVO", creado: "2025-02-05" },
-          { estado: "GRADUADO", creado: "2025-03-12" },
-          { estado: "SUSPENDIDO", creado: "2025-03-18" },
-          { estado: "ELIMINADO", creado: "2025-03-22" },
-        ];
-        setUserData(fakeData);
+  useEffect(() => {
+    const cargarListaUsuarios = async () => {
+      try {
+        const response = await fetchAuth("/api/usuario/lista", { method: "GET" });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data);
+        } else {
+          console.error("Error al obtener actividades");
+        }
+      } catch (err) {
+        console.error("Error inesperado:", err);
+        (true);
       }
     };
 
-    fetchUsuarios();
+    if (usuario?.tipo == "ADMINISTRATIVO") {
+      cargarListaUsuarios();
+    }
+
   }, []);
 
   // Función para agrupar por varios estados
