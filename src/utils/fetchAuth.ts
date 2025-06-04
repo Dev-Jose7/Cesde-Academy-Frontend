@@ -2,9 +2,9 @@
 import { showLoader, hideLoader } from "../components/common/Loader";
 
 export function resolveUrl(url: string){
-  if (url.startsWith("api")) {
+  if (url.startsWith("/api")) {
     return "https://cesde-academic-app-production.up.railway.app" + url.replace("/api", "")
-  } else if (url.startsWith("analytics")) {
+  } else if (url.startsWith("/analytics")) {
     return "https://cesde-academic-analytics-production.up.railway.app" + url.replace("/analytics", "")
   }
 }
