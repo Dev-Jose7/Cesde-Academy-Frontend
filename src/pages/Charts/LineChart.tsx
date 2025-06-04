@@ -2,6 +2,7 @@ import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import ComponentCard from "../../components/common/ComponentCard";
 import LineChartOne from "../../components/charts/line/LineChartOne";
 import PageMeta from "../../components/common/PageMeta";
+import { fetchAuth } from "../../utils/fetchAuth";
 
 export default function LineChart() {
 
@@ -13,21 +14,31 @@ export default function LineChart() {
     }
 
     let id = JSON.parse(usuario).id
-    let responseAsistencias = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/asistencias/one`);
-    let responseCalificaciones = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/calificaciones/three`);
-    let responseDocentes = await fetch(`https://cesde-academic-analytics-production.up.railway.app/docentes/${id}/notas/one`)
+    let tipo = JSON.parse(usuario).tipo;
 
-    try {
-      let dataAsistencias = await responseAsistencias.json()
-      let dataCalificaciones = await responseCalificaciones.json();
-      let dataDocentes = await responseDocentes.json();
-      console.log("Asistencias del usuario: ", dataAsistencias);
-      console.log("Calificaciones usuario: ", dataCalificaciones)
-      console.log("Promedio de notas de los estudiantes del docente: ", dataDocentes)
-    } catch (error) {
-      
-    }
+    switch (tipo){
+      case "ESTUDIANTE":
+        let responseAsistencias = await fetchAuth(`api/estudiantes/${id}/asistencias/one/${tipo}`, {method:"GET"});
+        let responseCalificaciones = await fetchAuth(`api/estudiantes/${id}/calificaciones/three/${tipo}`, {method:"GET"});
     
+        try {
+          let dataAsistencias = await responseAsistencias.json()
+          let dataCalificaciones = await responseCalificaciones.json();
+          console.log("Asistencias del usuario: ", dataAsistencias);
+          console.log("Calificaciones usuario: ", dataCalificaciones);
+        } catch (error) {
+          
+        }
+
+      case "DOCENTE":
+        let responseDocentes = await fetchAuth(`api/docentes/${id}/notas/one/${tipo}`, {method:"GET"})
+        try {
+          let dataDocentes = await responseDocentes.json();
+          console.log("Promedio de notas de los estudiantes del docente: ", dataDocentes)
+        } catch (error) {
+          
+        }
+    }
   }
 
   getAnalitycs();
