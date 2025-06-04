@@ -15,12 +15,15 @@ export default function LineChart() {
     let id = JSON.parse(usuario).id
     let responseAsistencias = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/asistencias`);
     let responseCalificaciones = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/califiaciones`);
-    
+    let responseDocentes = await fetch(`https://cesde-academic-analytics-production.up.railway.app/docentes/${id}/notas`)
+
     try {
       let dataAsistencias = await responseAsistencias.json()
       let dataCalificaciones = await responseCalificaciones.json();
-      console.log("Asistencias usuario ID: 1: ", dataAsistencias);
-      console.log("Calificaciones usuario ID: 3: ", dataCalificaciones)
+      let dataDocentes = await responseDocentes.json();
+      console.log("Asistencias del usuario: ", dataAsistencias);
+      console.log("Calificaciones usuario: ", dataCalificaciones)
+      console.log("Promedio de notas de los estudiantes del docente: ", dataDocentes)
     } catch (error) {
       
     }
