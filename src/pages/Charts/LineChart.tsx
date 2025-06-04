@@ -11,7 +11,8 @@ export default function LineChart() {
       const usuario = localStorage.getItem("usuario");
       if (!usuario) return;
 
-      const { id, tipo } = JSON.parse(usuario);
+      const id = JSON.parse(usuario).id;
+      const tipo = JSON.parse(usuario).tipo;
 
       try {
         switch (tipo) {
