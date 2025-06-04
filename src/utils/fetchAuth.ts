@@ -1,19 +1,22 @@
 // src/utils/fetchAuth.ts
 import { showLoader, hideLoader } from "../components/common/Loader";
 
+export function resolveUrl(url: string){
+  if (url.startsWith("api")) {
+    return "https://cesde-academic-app-production.up.railway.app" + url.replace("/api", "")
+  } else if (url.startsWith("analytics")) {
+    return "https://cesde-academic-analytics-production.up.railway.app" + url.replace("/analytics", "")
+  }
+}
+
 export async function fetchAuth(
     url: string,
     options: RequestInit = {}
   ): Promise<Response> {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    let server = "";
 
-    if (url.startsWith("api")) {
-      server = "https://cesde-academic-app-production.up.railway.app" + url.replace("/api", "")
-    } else if (url.startsWith("analytics")) {
-      server = "https://cesde-academic-analytics-production.up.railway.app" + url.replace("/analytics", "")
-    }
+    let server = resolveUrl(url) || "";
   
     showLoader("Cargando...");
   
