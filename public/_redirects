@@ -1,2 +1,1 @@
-/api/*  https://cesde-academic-app-production.up.railway.app/:splat  200!
-/analytics/*  https://cesde-academic-analytics-production.up.railway.app/:splat  200!
+/*    /index.html   200

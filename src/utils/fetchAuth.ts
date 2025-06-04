@@ -7,6 +7,13 @@ export async function fetchAuth(
   ): Promise<Response> {
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
+    let server = "";
+
+    if (url.startsWith("api")) {
+      server = "https://cesde-academic-app-production.up.railway.app" + url.replace("/api", "")
+    } else if (url.startsWith("analytics")) {
+      server = "https://cesde-academic-analytics-production.up.railway.app" + url.replace("/analytics", "")
+    }
   
     showLoader("Cargando...");
   
@@ -20,7 +27,7 @@ export async function fetchAuth(
         },
       };
   
-      let response = await fetch(url, withAuthHeader);
+      let response = await fetch(server, withAuthHeader);
   
       if (response.status === 401 && refreshToken) {
         const refreshResponse = await fetch("/api/auth/refresh", {
