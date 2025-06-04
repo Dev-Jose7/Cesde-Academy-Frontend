@@ -6,8 +6,15 @@ import PageMeta from "../../components/common/PageMeta";
 export default function LineChart() {
 
   const getAnalitycs = async () => {
-    let responseAsistencias = await fetch("https://cesde-academic-analytics-production.up.railway.app/estudiantes/1/asistencias");
-    let responseCalificaciones = await fetch("https://cesde-academic-analytics-production.up.railway.app/estudiantes/3/califiaciones");
+    let usuario = localStorage.getItem("usuario");
+
+    if(usuario == null) {
+      return
+    }
+
+    let id = JSON.parse(usuario).id
+    let responseAsistencias = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/asistencias`);
+    let responseCalificaciones = await fetch(`https://cesde-academic-analytics-production.up.railway.app/estudiantes/${id}/califiaciones`);
     
     try {
       let dataAsistencias = await responseAsistencias.json()
