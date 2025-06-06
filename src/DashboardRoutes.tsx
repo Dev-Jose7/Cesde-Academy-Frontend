@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { useUser } from "./context/UserContext";
 
+// Componentes existentes
 import Home from "./pages/Dashboard/Home";
 import UserProfiles from "./pages/UserProfiles";
 import Calendar from "./pages/Calendar";
@@ -18,33 +19,59 @@ import BarChart from "./pages/Charts/BarChart";
 
 export default function DashboardRoutes() {
   const { usuario } = useUser();
-
   if (!usuario) return null;
 
   return (
     <Routes>
       <Route index element={<Home />} />
 
-      {usuario.tipo === "DOCENTE" ? (
+      {/* Ruta común para todos los tipos de usuario */}
+      <Route path="profile" element={<UserProfiles />} />
+
+
+      {/* Estudiante */}
+      {usuario.tipo === "ESTUDIANTE" && (
         <>
-          <Route path="profile" element={<UserProfiles />} />
-          <Route path="Clases" element={<Calendar />} />
-          <Route path="blank" element={<Blank />} />
-          <Route path="Actividades" element={<FormElements />} />
-          <Route path="basic-tables" element={<BasicTables />} />
-          <Route path="alerts" element={<Alerts />} />
-          <Route path="avatars" element={<Avatars />} />
-          <Route path="badge" element={<Badges />} />
-          <Route path="buttons" element={<Buttons />} />
-          <Route path="images" element={<Images />} />
-          <Route path="videos" element={<Videos />} />
-          <Route path="line-chart" element={<LineChart />} />
-          <Route path="bar-chart" element={<BarChart />} />
+          <Route path="calificaciones" element={<BasicTables />} />
+          <Route path="asistencias" element={<Alerts />} />
+          <Route path="modulos" element={<Videos />} />
+          <Route path="horarios" element={<Calendar />} />
+          <Route path="anuncios" element={<Avatars />} />
         </>
-      ) : (
+      )}
+
+      {/* Docente */}
+      {usuario.tipo === "DOCENTE" && (
         <>
-          <Route path="line-chart" element={<LineChart />} />
-          <Route path="bar-chart" element={<BarChart />} />
+          <Route path="clases" element={<Calendar />} />
+          <Route path="actividades" element={<FormElements />} />
+          <Route path="calificaciones" element={<BasicTables />} />
+          <Route path="anuncios" element={<Avatars />} />
+          <Route path="reportes" element={<LineChart />} />
+        </>
+      )}
+
+      {/* Administrativo */}
+      {usuario.tipo === "ADMINISTRATIVO" && (
+        <>
+          <Route path="usuarios" element={<UserProfiles />} />
+          <Route path="grupos" element={<BasicTables />} />
+          <Route path="horario" element={<Calendar />} />
+          <Route path="clase" element={<FormElements />} />
+          <Route path="anuncios" element={<Avatars />} />
+          <Route path="reportes" element={<BarChart />} />
+        </>
+      )}
+
+      {/* Directivo */}
+      {usuario.tipo === "DIRECTIVO" && (
+        <>
+          <Route path="escuelas" element={<FormElements />} />
+          <Route path="programas" element={<BasicTables />} />
+          <Route path="modulos" element={<Images />} />
+          <Route path="estadisticas" element={<LineChart />} />
+          <Route path="anuncios" element={<Avatars />} />
+          <Route path="reportes" element={<BarChart />} />
         </>
       )}
     </Routes>
