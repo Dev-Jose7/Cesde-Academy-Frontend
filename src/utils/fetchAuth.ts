@@ -36,8 +36,7 @@ export async function fetchAuth(
 
     // Si el token expiró, intenta refrescarlo
     if (response.status === 401 && refreshToken) {
-      const refreshResponse = await fetch(
-        resolveUrl("/api/auth/refresh"), // ← Ahora también usa resolveUrl
+      const refreshResponse = await fetch(resolveUrl("/api/auth/refresh"), // ← Ahora también usa resolveUrl
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
